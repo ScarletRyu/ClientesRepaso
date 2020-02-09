@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Ajax01</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="js\jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <link rel="icon" href="img/star_wars_logo.png" type="image/gif">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container mt-5">
+      <form>
+        <div class="form-group d-flex">
+          <label for="exampleInputEmail1">Numero</label>
+          <input type="number" class="form-control" id="TextNumber">
+        </div>
+        <div class="form-group d-flex">
+          <label for="exampleInputPassword1">Datos</label>
+          <input type="text" class="form-control" id="TextData">
+        </div>
+        <div class="form-group">
+          <select class="form-control" id="TypeSelector">
+            <option value="planets">Planetas</option>
+            <option value="people">Personajes</option>
+            <option value="starships">Naves</option>
+          </select>
+        </div>
+        <hr>
+        <label>Resultado</label>
+        <div class="form-group">
+          <textarea class="form-control" id="resultado" rows="8"></textarea>
+        </div>
+        <button type="button"  class="btn btn-primary" name="button" id="boton">GET ( JS )</button>
+        <button type="button"  class="btn btn-primary" name="button" id="boton2">GET ( JQUERY )</button>
+        <button type="button" class="btn btn-primary" id="boton3">POST ( JS )</button>
+        <button type="button" class="btn btn-primary" id="boton4">POST ( JQUERY )</button>
+      </form>
+    </div>
+    <div class="container mt-5">
+      <label>Respuesta Servidor</label><input type="text" class="form-control" id="peticion" readonly>
+    </div>
+    <div class="mt-5">
+      <table class="table">
+        <thead>
+          <tr class="cabesa">
+          </tr>
+        </thead>
+        <tbody class="cuerpaso">
+        </tbody>
+      </table>
+    </div>
+    <div class="overlay"><img class="loading" src="img\giphy.gif" alt="loading"></div>
+    <script>
+      $(document).ready(function(){
+        //LLAMADA GET AJAX CON JS
+        $('#boton').click(function(){
+          var textarea = document.getElementById("resultado");
+          var selector = document.getElementById("TypeSelector");
+          var tipo = selector.options[selector.selectedIndex].value;
+          var numero = document.getElementById('TextNumber').value;
+          var datos = document.getElementById('TextData').value;
+          var loading = document.getElementsByClassName('overlay');
+          var td = document.createElement("td");
+          var tr = document.createElement("tr");
+          var url = 'https://swapi.co/api/'+tipo+'/'+numero;
+          var request = new XMLHttpRequest();
+          var texto ='';
+          var texto2 ='';
+          $(loading).css('visibility', 'visible');
+          //definimos el tipo de petición así como la url
+          request.open('GET', url, true);
+          request.onload = function(){
+            //almacenamos JSON
+            var data = JSON.parse(this.response);
+            //En caso de que la petición sea correcta
+            if(request.status >= 200 && request.status < 400){
+              $(loading).css('visibility', 'hidden');
+              if ($('.cabesa').children().length === 0) {
+                for (var key in data) {
+                  $('.cabesa').append('<th scope="col">'+key+'</th>');
+                }
+              }
+              $('.cuerpaso').append(tr);
+              console.log(data);
+              for (variable in data) {
+                if (variable == 'residents') {
+                  for (var i = 0; i < data[variable].length; i++){
+                    texto = texto + (data[variable][i] + "<br>");
+                  }
+                  $('.cuerpaso').append('<td>'+texto+'</td>');
+                }else if (variable == 'films') {
+                  for (var i = 0; i < data[variable].length; i++){
+                    texto2 = texto2 + (data[variable][i] + "<br>");
+                  }
+                  $('.cuerpaso').append('<td>'+texto2+'</td>');
+                }else {
+                  $('.cuerpaso').append('<td>'+data[variable]+'</td>');
+                }
+                if (variable == 'url') {
+                  $('.cuerpaso').append(tr);
+                }
+              }
+              textarea.value = request.responseText;
+              //En cada caso de que la petición contenga algún error
+            }else{
+              console.log('error');
+            }
+          }
+          request.send();
+        });
+        //LLAMADA GET AJAX CON JQUERY
+        $('#boton2').click(function(){
+          var selector = document.getElementById("TypeSelector");
+          var tipo = selector.options[selector.selectedIndex].value;
+          var numero = document.getElementById('TextNumber').value;
+          var datos = document.getElementById('TextData').value;
+          var url = 'https://swapi.co/api/'+tipo+'/'+numero;
+          var loading = document.getElementsByClassName('overlay');
+          $(loading).css('visibility', 'visible');
+          $.get(url, function(xhr, status){
+            if (status == "success") {
+              console.log(xhr.name);
+              $(loading).css('visibility', 'hidden');
+              $('#resultado').val(xhr.name);
+            }
+          });
+        });
+        $('#boton3').click(function(){
+          var selector = document.getElementById("TypeSelector");
+          var tipo = selector.options[selector.selectedIndex].value;
+          var numero = document.getElementById('TextNumber').value;
+          var datos = document.getElementById('TextData').value;
+          var array = ['Numero:'+numero , 'Tipo:'+tipo , 'Datos:'+datos];
+          var url = 'https://my-json-server.typicode.com/typicode/demo/posts';
+          var request = new XMLHttpRequest();
+          request.open('POST',url,true);
+          request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+          request.onreadystatechange = function(){
+            //En caso de que la petición sea correcta
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 201) {
+              //Guardamos la información
+              $('#peticion').val('[JS]El envio de datos se ha efectuado Correctamente \n Estado: ' + this.status);
+              console.log(JSON.parse(this.responseText));
+              $('#resultado').val(JSON.parse(this.responseText));
+              //En cada caso de que la petición contenga algún error
+            }else{
+              document.getElementById('peticion').innerHTML = 'ERROR!: '+ request.status + '|| '+ request.statusText;
+            }
+          };
+          request.send("title= POST-METHOD &body=" + array + "&userId=1");
+        });
+        $('#boton4').click(function(){
+          var selector = document.getElementById("TypeSelector");
+          var tipo = selector.options[selector.selectedIndex].value;
+          var numero = document.getElementById('TextNumber').value;
+          var datos = document.getElementById('TextData').value;
+          var url = 'https://my-json-server.typicode.com/typicode/demo/posts';
+          $.post(url,{
+            title:'POST-METHOD',
+            body:'Numero: '+numero+',Tipo: '+tipo+',Datos: '+datos,
+            userId:1
+          },
+          function(data,status){
+            console.log('Data:');
+            console.log(data);
+            console.log('Status: '+ status);
+            $('#peticion').val('[JQUERY]El envio de datos se ha efectuado Correctamente \n Estado: ' + status);
+            $('#resultado').val(data);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
