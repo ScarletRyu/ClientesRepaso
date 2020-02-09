@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Cookies</title>
+    <script src="js\jquery-3.4.1.min.js"></script>
+  </head>
+  <body>
+    <p>Texto que cambia.</p>
+    <small>Recarga la página para ver el cambio de idioma.</small><br>
+    <button type="button" id="button">es</button>
+    <button type="button" id="button2">en</button>
+    <button type="button" id="button3">中国人</button>
+    <script>
+      $(document).ready(function(){
+        $("#button").click(function(){
+          if(typeof(Storage) != "undefined") {
+            //almacenar
+            localStorage.setItem("nombre", "Español");
+            //obtener
+            var nombre = localStorage.getItem("nombre");
+          } else{
+            //no hay soporte
+            console.log("Hubo un error inesperado");
+          }
+        });
+        $("#button2").click(function(){
+          if(typeof(Storage) != "undefined") {
+            //almacenar
+            localStorage.setItem("nombre", "Ingles");
+            //obtener
+            var nombre = localStorage.getItem("nombre");
+          } else{
+            //no hay soporte
+            console.log("Hubo un error inesperado");
+          }
+        });
+        $("#button3").click(function(){
+          if(typeof(Storage) != "undefined") {
+            //almacenar
+            localStorage.setItem("nombre", "Chino");
+            //obtener
+            var nombre = localStorage.getItem("nombre");
+          } else{
+            //no hay soporte
+            console.log("Hubo un error inesperado");
+          }
+        });
+        if (localStorage.getItem("nombre") === "Español") {
+          $("p").text("Texto que cambia.");
+          console.log('español');
+        }
+        if (localStorage.getItem("nombre") === "Ingles") {
+          $("p").text("Text that change");
+          console.log('ingles');
+        }
+        if (localStorage.getItem("nombre") === "Chino") {
+          $("p").text("文字变化");
+          console.log('chino');
+        }
+      });
+    </script>
+  </body>
+</html>
