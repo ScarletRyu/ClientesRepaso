@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+ <html>
+ <head>
+   <title></title>
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+ </head>
+ <body>
+ <div class="container">
+  <form action="index.html">
+    <label for="usrname">Username</label>
+    <input type="text" id="usrname" name="usrname" required>
+
+    <label for="psw">Password</label>
+  	<input type="password" id="psw" name="psw"  title="Seis carácteres y dígitos" required>
+
+    <input type="submit" value="Submit">
+  </form>
+</div>
+
+<div id="message">
+  <h3>La contraseña tiene que ser del siguiente tipo:</h3>
+  <p id="numero" class="invalid">Contener un <b>número</b></p>
+  <p id="mayus" class="invalid">Contener una <b>Mayúscula</b></p>
+  <p id="minus" class="invalid">Contener una <b>Minúscula</b></p>
+  <p id="dimension" class="invalid">Contener una longitud de <b>10 carácteres</b></p>
+  <p id="especial" class="invalid">La contraseña no puede contener <b>Cracteres especiales</b></p>
+  <p class="info">Caracteres Especiales: ` ~ ! # $ ^ & * ( ) _ º ª ¬ | + - = ? ; : ' " , . < > { } [ ] \ /</p>
+</div>
+ </body>
+ </html>
+ <script type="text/javascript">
+ 		var myInput = document.getElementById("psw");
+		var numero = document.getElementById("numero");
+    var mayus = document.getElementById("mayus");
+    var minus = document.getElementById("minus");
+    var dimension = document.getElementById("dimension");
+    var especial =document.getElementById("especial")
+
+	 	var patronnumero = /[0-9]/g;
+    var patroMayus = /[A-Z]/g;
+    var patroMinus = /[a-z]/g;
+    var patroDimension = /[^.*]{10,}/;
+    var patroSpecial = /[`~\!#\$%\^&\*\(\)_ªº¬\|\+\-=\?;\:'",\.<>\{\}\[\]\\\/]/;
+		//Cuando el usuario pulsa sobre la contraseña
+		myInput.onfocus = function() {
+		  document.getElementById("message").style.display = "block";
+		}
+		// Cuando el usuario pulsa fuera de la contraseña
+		myInput.onblur = function() {
+		  document.getElementById("message").style.display = "none";
+		}
+		//Se verifica según teclea
+	 	myInput.onkeyup = function() {
+	 		//verificamos el patron con la regex de tipo numerico
+		  	if(myInput.value.match(patronnumero)) {
+		  		//Cambiamos la clase del mensaje
+		    	numero.classList.remove("invalid");
+		    	numero.classList.add("valid");
+		 	} else {
+		 		//Cambiamos la clase del mensaje
+			    numero.classList.remove("valid");
+			    numero.classList.add("invalid");
+			}
+      if(myInput.value.match(patroMayus)) {
+        //Cambiamos la clase del mensaje
+        mayus.classList.remove("invalid");
+        mayus.classList.add("valid");
+      } else {
+      //Cambiamos la clase del mensaje
+        mayus.classList.remove("valid");
+        mayus.classList.add("invalid");
+      }
+      if(myInput.value.match(patroMinus)) {
+        //Cambiamos la clase del mensaje
+        minus.classList.remove("invalid");
+        minus.classList.add("valid");
+      } else {
+      //Cambiamos la clase del mensaje
+        minus.classList.remove("valid");
+        minus.classList.add("invalid");
+      }
+      if(myInput.value.match(patroDimension)) {
+        //Cambiamos la clase del mensaje
+        dimension.classList.remove("invalid");
+        dimension.classList.add("valid");
+      } else {
+      //Cambiamos la clase del mensaje
+        dimension.classList.remove("valid");
+        dimension.classList.add("invalid");
+      }
+      if(!(myInput.value.match(patroSpecial))) {
+        //Cambiamos la clase del mensaje
+        especial.classList.remove("invalid");
+        especial.classList.add("valid");
+        console.log("No hay caracteres especiales")
+      } else {
+      //Cambiamos la clase del mensaje
+        especial.classList.remove("valid");
+        especial.classList.add("invalid");
+      }
+		}
+ </script>
